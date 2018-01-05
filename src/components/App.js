@@ -10,7 +10,6 @@ import * as PostsAPI from '../utils/api'
 import { connect } from 'react-redux'
 import Typography from 'material-ui/Typography'
 import Posts from './Posts'
-import { Route, Link } from 'react-router-dom'
 
 function TabContainer(props) {
   const children = props.children
