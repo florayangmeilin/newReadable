@@ -4,6 +4,7 @@ import {
   GET_CATEGORIES,
   GET_POSTS,
   VOTE_POST,
+  SELECT_CATEGORY
 } from '../actions'
 
 function categories(state = [], action) {
@@ -28,7 +29,17 @@ function posts(state = [], action) {
   }
 }
 
+const selectedCategory = (state = 'all', action) => {
+  switch (action.type) {
+    case SELECT_CATEGORY:
+      return action.category
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   categories,
   posts,
+  selectedCategory
 })

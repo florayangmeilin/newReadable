@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { votePost } from '../actions'
 import { connect } from 'react-redux'
 import * as PostsAPI from '../utils/api'
-import Post from './Post'
+import Post from '../components/Post'
 
 const Posts = ({ posts, addVote, removeVote }) => (
   <Fragment>
