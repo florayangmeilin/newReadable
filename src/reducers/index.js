@@ -1,15 +1,15 @@
 import { combineReducers } from 'redux'
 
 import {
-  GET_CATEGORIES,
-  GET_POSTS,
+  RECEIVE_CATEGORIES,
+  RECEIVE_POSTS,
   VOTE_POST,
-  SELECT_CATEGORY
+  SET_CATEGORY
 } from '../actions'
 
 function categories(state = [], action) {
   switch (action.type) {
-    case GET_CATEGORIES:
+    case RECEIVE_CATEGORIES:
       const { categories } = action
       return categories
     default:
@@ -20,7 +20,7 @@ function categories(state = [], action) {
 function posts(state = [], action) {
   const { posts, post } = action
   switch (action.type) {
-    case GET_POSTS:    
+    case RECEIVE_POSTS:    
       return posts
     case VOTE_POST:    
       return state.map(p => (p.id === post.id ? {...p, voteScore: post.voteScore } : {...p}))
@@ -31,7 +31,7 @@ function posts(state = [], action) {
 
 const selectedCategory = (state = 'all', action) => {
   switch (action.type) {
-    case SELECT_CATEGORY:
+    case SET_CATEGORY:
       return action.category
     default:
       return state

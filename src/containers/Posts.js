@@ -13,9 +13,9 @@ const Posts = ({ posts, addVote, removeVote }) => (
 )
 
 function mapStateToProps(state) {
-  const { category } = state
+  const { selectedCategory } = state
   return {
-    posts: category ? state.posts.filter(p => p.category === category) : state.posts
+    posts: selectedCategory ? state.posts.filter(p => p.category === selectedCategory) : state.posts
   }
 }
 

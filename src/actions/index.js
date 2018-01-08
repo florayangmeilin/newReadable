@@ -1,19 +1,19 @@
 import * as PostsAPI from '../utils/api'
-export const GET_CATEGORIES = 'GET_CATEGORIES'
-export const GET_POSTS = 'GET_POSTS'
+export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES'
+export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const VOTE_POST = 'VOTE_POST'
-export const SELECT_CATEGORY = 'SELECT_CATEGORY'
+export const SET_CATEGORY = 'SET_CATEGORY'
 
 export function receiveCategories(categories) {
   return {
-    type: GET_CATEGORIES,
+    type: RECEIVE_CATEGORIES,
     categories,
   }
 }
 
-export function getPosts(posts) {
+export function receivePosts(posts) {
   return {
-    type: GET_POSTS,
+    type: RECEIVE_POSTS,
     posts,
   }
 }
@@ -25,17 +25,17 @@ export function votePost(post) {
   }
 }
 
-export function selectCategory(category) {
+export function setCategory(category) {
   return {
-    type: SELECT_CATEGORY,
+    type: SET_CATEGORY,
     category,
   }
 }
 
-export const fetchPosts = category => dispatch => {
+export const fetchPosts = () => dispatch => {
   return PostsAPI.getPosts()
     .then(posts => {
-      dispatch(getPosts(posts))
+      dispatch(receivePosts(posts))
     })
 }
 

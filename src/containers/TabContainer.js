@@ -7,7 +7,7 @@ function TabContainer(props) {
   return (
     <Typography component="div" style={{ padding: 8 * 3 }}>
       <Posts category={children} />
-    </Typography>
+    </Typography>  
   );
 }
 
