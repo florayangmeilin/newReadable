@@ -2,7 +2,7 @@ import React from 'react'
 import AppBar from 'material-ui/AppBar'
 import { withStyles } from 'material-ui/styles';
 import Tabs, { Tab } from 'material-ui/Tabs'
-import Sorter from '../containers/Sorter'
+import SorterContainer from '../containers/SorterContainer'
 import TabContainer from '../containers/TabContainer'
 
 const styles = theme => ({
@@ -13,8 +13,7 @@ const styles = theme => ({
   },
 });
 
-const AppContent = (props) => {
-  const { classes, category, categories, onChange } = props  
+const AppContent = ({ classes, category, categories, onChange }) => {
   return (
     categories.length > 0 ? (
       <div className={classes.root} >
@@ -27,10 +26,8 @@ const AppContent = (props) => {
             {categories.map(c => (<Tab label={c} value={c} key={c} />))}
           </Tabs>
         </AppBar>
-        <Sorter />
-        {category === null ? 
-        <TabContainer>all</TabContainer>:
-        <TabContainer>{category}</TabContainer>}         
+        <SorterContainer />
+        <TabContainer>{category}</TabContainer>
       </div >
     ) :
       <div>loading ...</div>

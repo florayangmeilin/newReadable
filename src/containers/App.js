@@ -1,17 +1,18 @@
 import React from 'react'
 import AppContent from '../components/AppContent'
-import { fetchCategories, fetchPosts, setCategory } from '../actions/index';
+import { fetchCategories, fetchPosts } from '../actions/index'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 class App extends React.Component {
   componentDidMount() {
-    const { dispatch, category } = this.props
+    const { dispatch } = this.props
     dispatch(fetchCategories())
     dispatch(fetchPosts())
-    dispatch(setCategory(category))
   }
-  handleChange = (event, value) => {    
-    window.location = value !== "#" ? `/${value}` : '/'      
+
+  handleChange = (event, value) => {
+    this.props.history.push(value !== "#" ? `/${value}` : '/')
   }
 
   render() {
@@ -30,8 +31,8 @@ const mapStateToProps = state => {
   const { categories, selectedCategory } = state
   return {
     categories: categories.map(o => o.name),
-    selectedCategory    
+    selectedCategory
   }
 }
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps)(withRouter(App))

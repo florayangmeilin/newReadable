@@ -22,8 +22,10 @@ ReactDOM.render(
   <BrowserRouter>
     <Provider store={store}>
       <Fragment>
-        <Route path="/" exact component={({ match }) => (<App category={null} />)} />
-        <Route path="/:category" render={({ match }) => (<App category={match.params.category} />)} />
+        <Route path="/" exact render={({ match }) => (<App category={null} />)} />
+        <Route path="/:category" render={({ match }) => {
+          return (<App category={match.params.category} />)
+        }} />
       </Fragment>
     </Provider>
   </BrowserRouter>,

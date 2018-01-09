@@ -4,7 +4,7 @@ import {
   RECEIVE_CATEGORIES,
   RECEIVE_POSTS,
   VOTE_POST,
-  SET_CATEGORY
+  SET_SORTER
 } from '../actions'
 
 function categories(state = [], action) {
@@ -20,19 +20,19 @@ function categories(state = [], action) {
 function posts(state = [], action) {
   const { posts, post } = action
   switch (action.type) {
-    case RECEIVE_POSTS:    
+    case RECEIVE_POSTS:
       return posts
-    case VOTE_POST:    
-      return state.map(p => (p.id === post.id ? {...p, voteScore: post.voteScore } : {...p}))
+    case VOTE_POST:
+      return state.map(p => (p.id === post.id ? { ...p, voteScore: post.voteScore } : { ...p }))
     default:
       return state
   }
 }
 
-const selectedCategory = (state = 'all', action) => {
+const selectedSorter = (state = 'dateEarliest', action) => {
   switch (action.type) {
-    case SET_CATEGORY:
-      return action.category
+    case SET_SORTER:
+      return action.sorter
     default:
       return state
   }
@@ -41,5 +41,5 @@ const selectedCategory = (state = 'all', action) => {
 export default combineReducers({
   categories,
   posts,
-  selectedCategory
+  selectedSorter
 })

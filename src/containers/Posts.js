@@ -4,18 +4,20 @@ import { connect } from 'react-redux'
 import * as PostsAPI from '../utils/api'
 import Post from '../components/Post'
 
-const Posts = ({ posts, addVote, removeVote }) => (
-  <Fragment>
-    {posts.map(post => (
-      <Post key={post.id} post={post} upVote={addVote} removeVote={removeVote} />
-    ))}
-  </Fragment>
-)
+const Posts = ({ posts, addVote, category, removeVote }) => {
+  return (
+    <Fragment>
+      {((!category && posts) || posts.filter(p => p.category === category)).map(post => (
+        <Post key={post.id} post={post} upVote={addVote} removeVote={removeVote} />
+      ))}
+    </Fragment>
+  )
+}
 
 function mapStateToProps(state) {
-  const { selectedCategory } = state
+  const { posts } = state
   return {
-    posts: selectedCategory ? state.posts.filter(p => p.category === selectedCategory) : state.posts
+    posts
   }
 }
 

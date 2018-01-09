@@ -2,7 +2,7 @@ import * as PostsAPI from '../utils/api'
 export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const VOTE_POST = 'VOTE_POST'
-export const SET_CATEGORY = 'SET_CATEGORY'
+export const SET_SORTER = 'SET_SORTER'
 
 export function receiveCategories(categories) {
   return {
@@ -25,10 +25,10 @@ export function votePost(post) {
   }
 }
 
-export function setCategory(category) {
+export function setSorter(sorter) {
   return {
-    type: SET_CATEGORY,
-    category,
+    type: SET_SORTER,
+    sorter,
   }
 }
 
@@ -41,7 +41,7 @@ export const fetchPosts = () => dispatch => {
 
 export const fetchCategories = () => dispatch => {
   return PostsAPI.getCategories()
-    .then(categories => {      
+    .then(categories => {
       dispatch(receiveCategories(categories))
     })
 }
