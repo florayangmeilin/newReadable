@@ -3,6 +3,7 @@ export const RECEIVE_CATEGORIES = 'RECEIVE_CATEGORIES'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const VOTE_POST = 'VOTE_POST'
 export const SET_SORTER = 'SET_SORTER'
+export const DELETE_POST = 'DELETE_POST'
 
 export function receiveCategories(categories) {
   return {
@@ -29,6 +30,13 @@ export function setSorter(sorter) {
   return {
     type: SET_SORTER,
     sorter,
+  }
+}
+
+export function deletePost(post) {
+  return {
+    type: DELETE_POST,
+    post,
   }
 }
 

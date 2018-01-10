@@ -4,7 +4,8 @@ import {
   RECEIVE_CATEGORIES,
   RECEIVE_POSTS,
   VOTE_POST,
-  SET_SORTER
+  SET_SORTER,
+  DELETE_POST
 } from '../actions'
 
 function categories(state = [], action) {
@@ -24,6 +25,8 @@ function posts(state = [], action) {
       return posts
     case VOTE_POST:
       return state.map(p => (p.id === post.id ? { ...p, voteScore: post.voteScore } : { ...p }))
+    case DELETE_POST:
+      return state.map(p => (p.id === post.id ? { ...p, deleted: true } : { ...p }))  
     default:
       return state
   }

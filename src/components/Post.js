@@ -10,6 +10,7 @@ import Edit from 'material-ui-icons/Edit'
 import Delete from 'material-ui-icons/Delete'
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
+import { Link } from 'react-router-dom'
 
 const styles = theme => ({
   heading: {
@@ -22,12 +23,12 @@ const styles = theme => ({
   },
 });
 
-const Post = ({ classes, post, upVote, removeVote }) => (
+const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
   <ExpansionPanel>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.heading}>
-        {post.title} <br />
-        Author: {post.author}
+        {post.title}<br />
+        Author: {post.author} ( {post.timestamp} ) 
       </Typography>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
@@ -44,10 +45,11 @@ const Post = ({ classes, post, upVote, removeVote }) => (
         <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { removeVote(post) }}>
           <ThumbDown />
         </IconButton>
+        <Link to={`/${post.category}/${post.id}}`}>aaa</Link>       
         <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
           <Edit />
         </IconButton>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
+        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { deletePost(post) }}>
           <Delete />
         </IconButton>
       </Toolbar>

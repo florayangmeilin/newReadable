@@ -32,3 +32,13 @@ export const downVote = (post) =>
     },
     body: JSON.stringify({ option: 'downVote' })
   }).then(res => res.json())
+
+  
+export const deletePost = (post) =>
+fetch(`${api}/posts/${post.id}`, {
+  method: 'DELETE',
+  headers: {
+    ...headers,
+    'Content-Type': 'application/json'
+  }
+}).then(res => res.json())

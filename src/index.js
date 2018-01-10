@@ -23,7 +23,7 @@ ReactDOM.render(
     <Provider store={store}>
       <Fragment>
         <Route path="/" exact render={({ match }) => (<App category={null} />)} />
-        <Route path="/:category" render={({ match }) => {
+        <Route path="/:category" exact render={({ match }) => {
           return (<App category={match.params.category} />)
         }} />
       </Fragment>
