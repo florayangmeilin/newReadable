@@ -28,7 +28,7 @@ const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.heading}>
         {post.title}<br />
-        Author: {post.author} ( {post.timestamp} ) 
+        Author: {post.author} ( {post.timestamp} )
       </Typography>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
@@ -45,10 +45,11 @@ const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
         <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { removeVote(post) }}>
           <ThumbDown />
         </IconButton>
-        <Link to={`/${post.category}/${post.id}}`}>aaa</Link>       
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
-          <Edit />
-        </IconButton>
+        <Link to={`/${post.category}/${post.id}`}>
+          <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
+            <Edit />
+          </IconButton>
+        </Link>
         <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { deletePost(post) }}>
           <Delete />
         </IconButton>

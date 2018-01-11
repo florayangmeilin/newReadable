@@ -1,14 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import AppContent from '../components/AppContent'
-import { fetchCategories, fetchPosts } from '../actions/index'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
 class App extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props
-    dispatch(fetchCategories())
-    dispatch(fetchPosts())
   }
 
   handleChange = (event, value) => {
@@ -18,11 +15,13 @@ class App extends React.Component {
   render() {
     const { category, categories } = this.props
     return (
-      <AppContent
-        category={category}
-        categories={categories}
-        onChange={this.handleChange}
-      />
+      <Fragment>
+        <AppContent
+          category={category}
+          categories={categories}
+          onChange={this.handleChange}
+        />      
+      </Fragment>
     )
   }
 }
