@@ -23,7 +23,7 @@ const styles = theme => ({
   },
 });
 
-const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
+const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
   <ExpansionPanel>
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.heading}>
@@ -39,10 +39,10 @@ const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
     </ExpansionPanelDetails>
     <AppBar position="static" color="accent">
       <Toolbar>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { upVote(post) }}>
+        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onUpVote(post) }}>
           <ThumbUp />
         </IconButton>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { removeVote(post) }}>
+        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDownVote(post) }}>
           <ThumbDown />
         </IconButton>
         <Link to={`/${post.category}/${post.id}`}>
@@ -50,7 +50,7 @@ const Post = ({ classes, post, upVote, removeVote, deletePost, category }) => (
             <Edit />
           </IconButton>
         </Link>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { deletePost(post) }}>
+        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDeletePost(post) }}>
           <Delete />
         </IconButton>
       </Toolbar>

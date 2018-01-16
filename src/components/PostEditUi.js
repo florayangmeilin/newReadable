@@ -29,7 +29,7 @@ const styles = theme => ({
 class PostDetail extends React.Component {
   state = {
     readonly: true,
-    category:"React",
+    category: "React",
     categories: [
       {
         name: 'react',
@@ -39,12 +39,12 @@ class PostDetail extends React.Component {
         name: 'redux',
         path: 'redux'
       },
-  
-  ]
+
+    ]
   }
   render() {
     const { classes, post } = this.props
-    return (
+    return (post ?
       <div className={classes.root} >
         <AppBar position="static">
           <Toolbar>
@@ -56,16 +56,17 @@ class PostDetail extends React.Component {
         <FormControl fullWidth className={classes.formControl}>
           <InputLabel>Content</InputLabel>
           <Input
-            id="content"        
+            id="content"
           />
         </FormControl>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="amount">Amount</InputLabel>
           <Input
-            id="adornment-amount"        
+            id="adornment-amount"
           />
         </FormControl>
-      </div >
+      </div > :
+      <div />
     )
   }
 }
