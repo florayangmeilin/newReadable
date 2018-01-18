@@ -13,7 +13,8 @@
 //       category: 'react',
 //       voteScore: 8,
 //       deleted: false,
-//       commentCount: 2
+//       commentCount: 3,
+//       comments: null
 //     },
 //     '6ni6ok3ym7mf1p33lnez': {
 //       id: '6ni6ok3ym7mf1p33lnez',
@@ -24,7 +25,8 @@
 //       category: 'redux',
 //       voteScore: -5,
 //       deleted: false,
-//       commentCount: 2
+//       commentCount: 2,
+//       comments: ['894tuq4ut84ut8v4t8wun89g', '8tu4bsun805n8un48ve89']
 //     }
 //   },
 //   comments: {
@@ -68,14 +70,18 @@
 //   selectedSorter: 'dateEarliest'
 // }
 
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import reducers from './reducers'
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 export default function configureStore(preloadedState) {
     return createStore(
         reducers,
         preloadedState,
-        applyMiddleware(thunkMiddleware)
+        composeEnhancers(
+            applyMiddleware(thunkMiddleware)
+          )      
     )
 }

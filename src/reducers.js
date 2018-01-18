@@ -8,6 +8,9 @@ import {
   UP_VOTE_POST_OK,
   DOWN_VOTE_POST_OK,
   DELETE_POST_OK,
+  UP_VOTE_COMMENT_OK,
+  DOWN_VOTE_COMMENT_OK,
+  DELETE_COMMENT_OK,
   FETCH_COMMENTS_OK,
   FETCH_COMMENT_OK,
   SET_SORTER_OK
@@ -46,6 +49,11 @@ const posts = (before = {}, action) => {
       const { post } = action
       return { ...before, [post.id]: { ...post, deleted: true } }
     }
+    case FETCH_COMMENTS_OK: {
+      const { comments, postId } = action
+      const post = before[postId]
+      return { ...before, [postId]: { ...(post || {}), comments: comments.map(c => c.id) } }
+    }
     default:
       return before
   }
@@ -60,6 +68,23 @@ const comments = (before = {}, action) => {
     case FETCH_COMMENT_OK: {
       const { comment } = action
       return { ...before, [comment.id]: comment }
+    }
+    case DELETE_POST_OK: {
+      const { post } = action
+      const comments = (post.comments || []).map(id => before[id]).filter(c => c)
+      return { ...before, ...(comments.reduce((s, c) => ({ ...s, [c.id]: { ...c, deleted: true } }), {})) }
+    }
+    case UP_VOTE_COMMENT_OK: {
+      const { comment } = action
+      return { ...before, [comment.id]: { ...comment, voteScore: comment.voteScore + 1 } }
+    }
+    case DOWN_VOTE_COMMENT_OK: {
+      const { comment } = action
+      return { ...before, [comment.id]: { ...comment, voteScore: comment.voteScore - 1 } }
+    }
+    case DELETE_COMMENT_OK: {
+      const { comment } = action
+      return { ...before, [comment.id]: { ...comment, deleted: true } }
     }
     default:
       return before

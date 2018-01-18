@@ -17,7 +17,7 @@ class Posts extends React.Component {
   }
 
   render() {
-    const { posts, onUpVote, onDownVote, onDeletePost } = this.props
+    const { posts, onUpVote, onDownVote, onDeletePost } = this.props 
     return <PostsUi posts={posts} onUpVote={onUpVote} onDownVote={onDownVote} onDeletePost={onDeletePost} />
   }
 }
@@ -25,12 +25,12 @@ class Posts extends React.Component {
 const sortFuns = {
   "dateEarliest": (a, b) => (a.timestamp - b.timestamp),
   "dateLatest": (a, b) => (b.timestamp - a.timestamp),
-  "scoreHighest": (a, b) => (a.voteScore - b.voteScore),
-  "scoreLowest": (a, b) => (b.voteScore - a.voteScore)
+  "scoreLowest": (a, b) => (a.voteScore - b.voteScore),
+  "scoreHighest": (a, b) => (b.voteScore - a.voteScore)
 }
 
 const mapStateToProps = ({ posts, postsByCategory, selectedSorter }, { category }) => {
-  const categoryPosts = postsByCategory[category]
+  const categoryPosts = postsByCategory[category] 
   return {
     posts: (categoryPosts && !categoryPosts.isFetching && !categoryPosts.isInvalidate &&
       categoryPosts.items.map(p => posts[p]).sort(sortFuns[selectedSorter])) || []

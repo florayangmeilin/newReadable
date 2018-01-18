@@ -82,6 +82,16 @@ export const upVotePost = post => dispatch =>
       })
     })
 
+export const UP_VOTE_COMMENT_OK = 'UP_VOTE_COMMENT_OK'
+export const upVoteComment = comment => dispatch =>
+  PostsAPI.upVoteComment(comment.id)
+    .then(() => {
+      dispatch({
+        type: UP_VOTE_COMMENT_OK,
+        comment
+      })
+    })
+
 export const DOWN_VOTE_POST_OK = 'DOWN_VOTE_POST_OK'
 export const downVotePost = post => dispatch =>
   PostsAPI.downVotePost(post.id)
@@ -89,6 +99,16 @@ export const downVotePost = post => dispatch =>
       dispatch({
         type: DOWN_VOTE_POST_OK,
         post
+      })
+    })
+
+export const DOWN_VOTE_COMMENT_OK = 'DOWN_VOTE_COMMENT_OK'
+export const downVoteComment = comment => dispatch =>
+  PostsAPI.downVoteComment(comment.id)
+    .then(() => {
+      dispatch({
+        type: DOWN_VOTE_COMMENT_OK,
+        comment
       })
     })
 
@@ -102,13 +122,23 @@ export const deletePost = post => dispatch =>
       })
     })
 
+export const DELETE_COMMENT_OK = 'DELETE_COMMENT_OK'
+export const deleteComment = comment => dispatch =>
+  PostsAPI.deleteComment(comment.id)
+    .then(() => {
+      dispatch({
+        type: DELETE_COMMENT_OK,
+        comment
+      })
+    })
+
 export const FETCH_COMMENTS_OK = 'FETCH_COMMENTS_OK'
-export const fetchComments = post => dispatch =>
-  PostsAPI.getComments(post)
+export const fetchComments = postId => dispatch =>
+  PostsAPI.getComments(postId)
     .then(comments => {
       dispatch({
         type: FETCH_COMMENTS_OK,
-        post,
+        postId,
         comments
       })
     })
