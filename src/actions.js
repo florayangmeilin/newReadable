@@ -113,13 +113,25 @@ export const downVoteComment = comment => dispatch =>
     })
 
 export const DELETE_POST_OK = 'DELETE_POST_OK'
-export const deletePost = post => dispatch =>
+export const deletePost = (post, onSuccess) => dispatch =>
   PostsAPI.deletePost(post.id)
     .then(() => {
       dispatch({
         type: DELETE_POST_OK,
         post
       })
+      onSuccess()
+    })
+
+export const SAVE_POST_OK = 'SAVE_POST_OK'
+export const savePost = (post, onSuccess) => dispatch =>
+  PostsAPI.savePost(post)
+    .then(() => {
+      dispatch({
+        type: SAVE_POST_OK,
+        post
+      })
+      onSuccess()
     })
 
 export const DELETE_COMMENT_OK = 'DELETE_COMMENT_OK'

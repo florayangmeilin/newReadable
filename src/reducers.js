@@ -13,118 +13,59 @@ import {
   DELETE_COMMENT_OK,
   FETCH_COMMENTS_OK,
   FETCH_COMMENT_OK,
-  SET_SORTER_OK
+  SET_SORTER_OK,
+  SAVE_POST_OK
 } from './actions'
 
-const categories = (before = { isFetched: false, items: [] }, action) => {
-  switch (action.type) {
-    case FETCH_CATEGORIES_OK: {
-      const { categories } = action
-      return { isFetched: true, items: categories }
-    }
-    default:
-      return before
+const reducers = {
+  categories: {
+    initValue: { isFetched: false, items: [] },
+    [FETCH_CATEGORIES_OK]: (state, { categories }) => ({ isFetched: true, items: categories })
+  },
+  posts: {
+    initValue: {},
+    [FETCH_POSTS_OK]: (state, { posts }) => ({ ...state, ...(posts.reduce((s, p) => ({ ...s, [p.id]: p }), {})) }),
+    [FETCH_POST_OK]: (state, { post }) => ({ ...state, [post.id]: post }),
+    [UP_VOTE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post, voteScore: post.voteScore + 1 } }),
+    [DOWN_VOTE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post, voteScore: post.voteScore - 1 } }),
+    [DELETE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post, deleted: true } }),
+    [FETCH_COMMENTS_OK]: (state, { comments, postId }) => {
+      const post = state[postId]
+      return { ...state, [postId]: { ...(post || {}), comments: comments.map(c => c.id) } }
+    },
+    [SAVE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post } })
+  },
+  comments: {
+    initValue: {},
+    [FETCH_COMMENTS_OK]: (state, { comments }) => ({ ...state, ...(comments.reduce((s, c) => ({ ...s, [c.id]: c }), {})) }),
+    [FETCH_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: comment }),
+    [DELETE_POST_OK]: (state, { post }) => {
+      const comments = (post.comments || []).map(id => state[id]).filter(c => c)
+      return { ...state, ...(comments.reduce((s, c) => ({ ...s, [c.id]: { ...c, deleted: true } }), {})) }
+    },
+    [UP_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore + 1 } }),
+    [DOWN_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore - 1 } }),
+    [DELETE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, deleted: true } })
+  },
+  postsByCategory: {
+    initValue: {},
+    [FETCH_POSTS_BEGIN]: (state, { category }) => ({ ...state, [category]: { isFetching: true } }),
+    [FETCH_POSTS_OK]: (state, { category, posts }) => ({ ...state, [category]: { isFetching: false, isInvalidate: false, items: posts.map(p => p.id) } }),
+    [FETCH_POSTS_FAILED]: (state, { category }) => ({ ...state, [category]: { isFetching: false, isInvalidate: true } })
+  },
+  selectedSorter: {
+    initValue: 'dateEarliest',
+    [SET_SORTER_OK]: (state, { sorter }) => sorter
   }
 }
 
-const posts = (before = {}, action) => {
-  switch (action.type) {
-    case FETCH_POSTS_OK: {
-      const { posts } = action
-      return { ...before, ...(posts.reduce((s, p) => ({ ...s, [p.id]: p }), {})) }
+const getReduces = reducers => (
+  Object.keys(reducers).reduce((b, r) => ({
+    ...b, [r]: (state = reducers[r].initValue, action) => {
+      const fun = reducers[r][action.type]
+      return (fun && fun(state, action)) || state
     }
-    case FETCH_POST_OK: {
-      const { post } = action
-      return { ...before, [post.id]: post }
-    }
-    case UP_VOTE_POST_OK: {
-      const { post } = action
-      return { ...before, [post.id]: { ...post, voteScore: post.voteScore + 1 } }
-    }
-    case DOWN_VOTE_POST_OK: {
-      const { post } = action
-      return { ...before, [post.id]: { ...post, voteScore: post.voteScore - 1 } }
-    }
-    case DELETE_POST_OK: {
-      const { post } = action
-      return { ...before, [post.id]: { ...post, deleted: true } }
-    }
-    case FETCH_COMMENTS_OK: {
-      const { comments, postId } = action
-      const post = before[postId]
-      return { ...before, [postId]: { ...(post || {}), comments: comments.map(c => c.id) } }
-    }
-    default:
-      return before
-  }
-}
+  }), {})
+)
 
-const comments = (before = {}, action) => {
-  switch (action.type) {
-    case FETCH_COMMENTS_OK: {
-      const { comments } = action
-      return { ...before, ...(comments.reduce((s, c) => ({ ...s, [c.id]: c }), {})) }
-    }
-    case FETCH_COMMENT_OK: {
-      const { comment } = action
-      return { ...before, [comment.id]: comment }
-    }
-    case DELETE_POST_OK: {
-      const { post } = action
-      const comments = (post.comments || []).map(id => before[id]).filter(c => c)
-      return { ...before, ...(comments.reduce((s, c) => ({ ...s, [c.id]: { ...c, deleted: true } }), {})) }
-    }
-    case UP_VOTE_COMMENT_OK: {
-      const { comment } = action
-      return { ...before, [comment.id]: { ...comment, voteScore: comment.voteScore + 1 } }
-    }
-    case DOWN_VOTE_COMMENT_OK: {
-      const { comment } = action
-      return { ...before, [comment.id]: { ...comment, voteScore: comment.voteScore - 1 } }
-    }
-    case DELETE_COMMENT_OK: {
-      const { comment } = action
-      return { ...before, [comment.id]: { ...comment, deleted: true } }
-    }
-    default:
-      return before
-  }
-}
-
-const postsByCategory = (before = {}, action) => {
-  switch (action.type) {
-    case FETCH_POSTS_BEGIN: {
-      const { category } = action
-      return { ...before, [category]: { isFetching: true } }
-    }
-    case FETCH_POSTS_OK: {
-      const { category, posts } = action
-      return { ...before, [category]: { isFetching: false, isInvalidate: false, items: posts.map(p => p.id) } }
-    }
-    case FETCH_POSTS_FAILED: {
-      const { category } = action
-      return { ...before, [category]: { isFetching: false, isInvalidate: true } }
-    }
-    default:
-      return before
-  }
-}
-
-const selectedSorter = (before = 'dateEarliest', action) => {
-  switch (action.type) {
-    case SET_SORTER_OK: {
-      const { sorter } = action
-      return sorter
-    }
-    default:
-      return before
-  }
-}
-
-export default combineReducers({
-  categories,
-  posts,
-  comments,
-  postsByCategory,
-  selectedSorter
-})
+export default combineReducers(getReduces(reducers))

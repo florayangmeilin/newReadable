@@ -3,39 +3,38 @@ import CategoryUi from './CategoryUi'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import * as actions from '../actions'
+import { compose } from 'redux'
 
-const Category = withRouter(
-  class extends React.Component {
-    state = {
-      open: false,
-    };
-    componentDidMount() {
-      const { fetchCategoriesIfNeeded } = this.props
-      fetchCategoriesIfNeeded()
-    }
-    handleOpen = () => {
-      this.setState({ open: true });
-    };
-  
-    handleClose = () => {
-      this.setState({ open: false });
-    };
-    render() {
-      const { category, categories, history } = this.props
-      const { open } = this.state
-      return (
-        <CategoryUi
-          category={category}
-          categories={categories}
-          onCategoryChange={toCategory => history.push(toCategory !== "#" ? `/${toCategory}` : '/')}
-          onOpen={this.handleOpen}
-          onClose={this.handleClose}
-          open={open}
-        />
-      )
-    }
+class Category extends React.Component {
+  state = {
+    open: false,
   }
-)
+  componentDidMount() {
+    const { fetchCategoriesIfNeeded } = this.props
+    fetchCategoriesIfNeeded()
+  }
+  handleOpen = () => {
+    this.setState({ open: true })
+  }
+
+  handleClose = () => {
+    this.setState({ open: false })
+  }
+  render() {
+    const { category, categories, history } = this.props
+    const { open } = this.state
+    return (
+      <CategoryUi
+        category={category}
+        categories={categories}
+        onCategoryChange={toCategory => history.push(toCategory !== "#" ? `/${toCategory}` : '/')}
+        onOpen={this.handleOpen}
+        onClose={this.handleClose}
+        open={open}
+      />
+    )
+  }
+}
 
 const mapStateToProps = state => {
   const { categories } = state
@@ -48,4 +47,8 @@ const mapDispatchToProps = dispatch => ({
   fetchCategoriesIfNeeded: category => { dispatch(actions.fetchCategoriesIfNeeded()) }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Category)
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withRouter
+)(Category)
+

@@ -1,17 +1,19 @@
-import React from 'react';
-import { withStyles } from 'material-ui/styles';
-import Grid from 'material-ui/Grid';
-import Paper from 'material-ui/Paper';
-import Input from 'material-ui/Input/Input';
-import Typography from 'material-ui/Typography';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import IconButton from 'material-ui/IconButton';
-import ThumbUp from 'material-ui-icons/ThumbUp';
-import ThumbDown from 'material-ui-icons/ThumbDown';
-import Edit from 'material-ui-icons/Edit';
-import Delete from 'material-ui-icons/Delete';
-import Save from 'material-ui-icons/Save';
+import React from 'react'
+import { withStyles } from 'material-ui/styles'
+import Grid from 'material-ui/Grid'
+import Paper from 'material-ui/Paper'
+import Input from 'material-ui/Input/Input'
+import Typography from 'material-ui/Typography'
+import AppBar from 'material-ui/AppBar'
+import Toolbar from 'material-ui/Toolbar'
+import IconButton from 'material-ui/IconButton'
+import ThumbUp from 'material-ui-icons/ThumbUp'
+import ThumbDown from 'material-ui-icons/ThumbDown'
+import Edit from 'material-ui-icons/Edit'
+import Delete from 'material-ui-icons/Delete'
+import Save from 'material-ui-icons/Save'
+import { withRouter } from 'react-router-dom'
+import { compose } from 'redux'
 import Comments from './Comments'
 
 const styles = {
@@ -45,9 +47,11 @@ const styles = {
     fontSize: '0.5em',
     textAlign: 'center',
   },
-};
+}
 
-const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editable, onEdit, onSave }) => {
+const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost, editable, onEdit, onSave, title, body, onChange}) => {
+  console.log("title:", title)
+  console.log("body:", body)
   return (post ?
     <Grid container className={classes.root}>
       <Grid item xs={12}>
@@ -72,7 +76,7 @@ const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editabl
                   name="title"
                   defaultValue={post.title}
                   fullWidth
-                  disabled={!editable}
+                  disabled={!editable}                 
                 />
               </div>
               <br />
@@ -98,7 +102,7 @@ const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editabl
                   name="author"
                   defaultValue={post.author}
                   fullWidth
-                  disabled={!editable}
+                  disabled={true}
                 />
               </div>
               <br />
@@ -113,7 +117,7 @@ const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editabl
                 <AppBar position="static" color="accent">
                   {editable ?
                     <Toolbar>
-                      <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onSave(post) }}>
+                      <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onSave({...post, title: 'aaa', body: 'bbb'}) }}>
                         <Save />
                       </IconButton>
                     </Toolbar> :
@@ -127,7 +131,7 @@ const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editabl
                       <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onEdit() }}>
                         <Edit />
                       </IconButton>
-                      <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDeletePost(post) }}>
+                      <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDeletePost(post, () => { history.push(`/${post.category}`) }) }}>
                         <Delete />
                       </IconButton>
                     </Toolbar>}
@@ -143,4 +147,8 @@ const PostEditUi = ({ classes, post, onUpVote, onDownVote, onDeletePost, editabl
     </Grid> : <div />
   )
 }
-export default withStyles(styles)(PostEditUi)
+
+export default compose(
+  withRouter,
+  withStyles(styles)
+)(PostEditUi)
