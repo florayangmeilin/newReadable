@@ -6,7 +6,7 @@ import * as actions from '../actions'
 class Comments extends React.Component {
   state = {
     editable: false,
-  };
+  }
 
   componentDidMount() {
     const { fetchComments, post } = this.props   
@@ -14,11 +14,11 @@ class Comments extends React.Component {
   }
 
   handleEdit = () => {
-    this.setState({ editable: true });
-  };
+    this.setState({ editable: true })
+  }
   handleSave = () => {
-    this.setState({ editable: false });
-  };
+    this.setState({ editable: false })
+  }
 
   render() {
     const { comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment } = this.props

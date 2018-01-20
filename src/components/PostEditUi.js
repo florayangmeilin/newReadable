@@ -49,9 +49,7 @@ const styles = {
   },
 }
 
-const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost, editable, onEdit, onSave, title, body, onChange}) => {
-  console.log("title:", title)
-  console.log("body:", body)
+const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost, editable, onEdit, onSave}) => {
   return (post ?
     <Grid container className={classes.root}>
       <Grid item xs={12}>
@@ -76,7 +74,7 @@ const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost
                   name="title"
                   defaultValue={post.title}
                   fullWidth
-                  disabled={!editable}                 
+                  disabled={!editable}                      
                 />
               </div>
               <br />
@@ -89,7 +87,7 @@ const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost
                   name="body"
                   defaultValue={post.body}
                   fullWidth
-                  disabled={!editable}
+                  disabled={!editable}                
                 />
               </div>
               <br />
@@ -102,7 +100,7 @@ const PostEditUi = ({ classes, post, history, onUpVote, onDownVote, onDeletePost
                   name="author"
                   defaultValue={post.author}
                   fullWidth
-                  disabled={true}
+                  disabled={true}                 
                 />
               </div>
               <br />

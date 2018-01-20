@@ -5,9 +5,7 @@ import * as actions from '../actions'
 
 class PostEdit extends React.Component {
   state = {
-    editable: false,
-    title: '',
-    body: '',
+    editable: false,  
   }
 
   componentDidMount() {
@@ -29,14 +27,9 @@ class PostEdit extends React.Component {
     this.setState({ editable: false })
     dispatch(actions.savePost(post, () => { alert('save ok') }))
   }
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
-  };
   render() {
     const { post, onUpVote, onDownVote, onDeletePost } = this.props
-    const { editable, title, body } = this.state
+    const { editable } = this.state
     return (
       <PostEditUi
         post={post}
@@ -45,10 +38,8 @@ class PostEdit extends React.Component {
         onDownVote={onDownVote}
         onDeletePost={onDeletePost}
         onEdit={this.handleEdit}
-        onSave={this.handleSave} 
-        onChange={this.handleChange}
-        title={title}
-        body={body}/>
+        onSave={this.handleSave}      
+       />
     )
   }
 }

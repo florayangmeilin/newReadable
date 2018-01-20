@@ -1,22 +1,22 @@
-import React from 'react';
-import { withStyles } from 'material-ui/styles';
+import React from 'react'
+import { withStyles } from 'material-ui/styles'
 import ExpansionPanel, {
   ExpansionPanelSummary,
   ExpansionPanelDetails,
-} from 'material-ui/ExpansionPanel';
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import IconButton from 'material-ui/IconButton';
-import ThumbUp from 'material-ui-icons/ThumbUp';
-import ThumbDown from 'material-ui-icons/ThumbDown';
-import Edit from 'material-ui-icons/Edit';
-import Delete from 'material-ui-icons/Delete';
-import Typography from 'material-ui/Typography';
-import { Link } from 'react-router-dom';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Input from 'material-ui/Input/Input';
-import Grid from 'material-ui/Grid';
-import Save from 'material-ui-icons/Save';
+} from 'material-ui/ExpansionPanel'
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore'
+import IconButton from 'material-ui/IconButton'
+import ThumbUp from 'material-ui-icons/ThumbUp'
+import ThumbDown from 'material-ui-icons/ThumbDown'
+import Edit from 'material-ui-icons/Edit'
+import Delete from 'material-ui-icons/Delete'
+import Typography from 'material-ui/Typography'
+import { Link } from 'react-router-dom'
+import AppBar from 'material-ui/AppBar'
+import Toolbar from 'material-ui/Toolbar'
+import Input from 'material-ui/Input/Input'
+import Grid from 'material-ui/Grid'
+import Save from 'material-ui-icons/Save'
 
 const styles = theme => ({
   root: {
@@ -26,10 +26,10 @@ const styles = theme => ({
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular,
   },
-});
+})
 
 function CommentsUi(props) {
-  const { classes, comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment, editable, onEdit, onSave } = props;
+  const { classes, comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment, editable, onEdit, onSave } = props
   return (
     <div className={classes.root}>
       {comments.filter(c => !c.deleted).map(comment =>
@@ -97,4 +97,4 @@ function CommentsUi(props) {
       )
       } 
          
-export default withStyles(styles)(CommentsUi);
+export default withStyles(styles)(CommentsUi)

@@ -21,7 +21,7 @@ const styles = theme => ({
     marginLeft: -12,
     marginRight: 20,
   },
-});
+})
 
 const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
   <ExpansionPanel>
@@ -58,5 +58,5 @@ const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
   </ExpansionPanel>
 )
 
-const PostWithStyle = withStyles(styles)(Post);
+const PostWithStyle = withStyles(styles)(Post)
 export default PostWithStyle
