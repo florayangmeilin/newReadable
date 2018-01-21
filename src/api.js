@@ -76,6 +76,16 @@ export const savePost = post =>
     body: JSON.stringify({ title: post.title, body: post.body })
   }).then(res => res.json())
 
+export const saveComment = comment =>
+  fetch(`${api}/comments/${comment.id}`, {
+    method: 'PUT',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ timestamp: comment.timestamp, body: comment.body })
+  }).then(res => res.json())
+
 export const deleteComment = commentId =>
   fetch(`${api}/comments/${commentId}`, {
     method: 'DELETE',

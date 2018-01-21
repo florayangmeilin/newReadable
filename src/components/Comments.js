@@ -4,34 +4,20 @@ import CommentsUi from './CommentsUi'
 import * as actions from '../actions'
 
 class Comments extends React.Component {
-  state = {
-    editable: false,
-  }
-
   componentDidMount() {
     const { fetchComments, post } = this.props   
       fetchComments(post.id)   
   }
-
-  handleEdit = () => {
-    this.setState({ editable: true })
-  }
-  handleSave = () => {
-    this.setState({ editable: false })
-  }
-
+  
   render() {
-    const { comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment } = this.props
-    const { editable } = this.state    
+    const { comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment } = this.props     
     return  <CommentsUi 
     comments={comments} 
     post={post} 
     onUpVoteComment={onUpVoteComment} 
     onDownVoteComment={onDownVoteComment} 
-    onDeleteComment={onDeleteComment}
-    editable={editable}
-    onEdit={this.handleEdit}
-    onSave={this.handleSave}/>   
+    onDeleteComment={onDeleteComment} 
+    />   
   }
 }
 

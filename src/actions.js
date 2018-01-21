@@ -134,6 +134,17 @@ export const savePost = (post, onSuccess) => dispatch =>
       onSuccess()
     })
 
+export const SAVE_COMMENT_OK = 'SAVE_COMMENT_OK'
+export const saveComment = (comment, onSuccess) => dispatch =>
+  PostsAPI.saveComment(comment)
+    .then(() => {
+      dispatch({
+        type: SAVE_COMMENT_OK,
+        comment
+      })
+      onSuccess()
+    })
+
 export const DELETE_COMMENT_OK = 'DELETE_COMMENT_OK'
 export const deleteComment = comment => dispatch =>
   PostsAPI.deleteComment(comment.id)

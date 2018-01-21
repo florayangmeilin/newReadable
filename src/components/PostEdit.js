@@ -4,8 +4,14 @@ import PostEditUi from './PostEditUi'
 import * as actions from '../actions'
 
 class PostEdit extends React.Component {
-  state = {
-    editable: false,  
+  constructor(props) {
+    super(props)
+    const post = props.post || {}
+    this.state = {
+      editable: false,
+      title: post.title,
+      body: post.body
+    }
   }
 
   componentDidMount() {
@@ -22,10 +28,16 @@ class PostEdit extends React.Component {
   handleEdit = () => {
     this.setState({ editable: true })
   }
-  handleSave = post => {
-    const { dispatch } = this.props
+  handleChange = e => {
+    const { name, value } = e.target
+    this.setState({
+      [name]: value
+    })
+  }
+  handleSave = onSuccess => {
+    const { dispatch, post } = this.props
     this.setState({ editable: false })
-    dispatch(actions.savePost(post, () => { alert('save ok') }))
+    dispatch(actions.savePost({ ...post, title: this.state.title, body: this.state.body }, onSuccess))
   }
   render() {
     const { post, onUpVote, onDownVote, onDeletePost } = this.props
@@ -38,8 +50,9 @@ class PostEdit extends React.Component {
         onDownVote={onDownVote}
         onDeletePost={onDeletePost}
         onEdit={this.handleEdit}
-        onSave={this.handleSave}      
-       />
+        onSave={this.handleSave}
+        onChange={this.handleChange}
+      />
     )
   }
 }

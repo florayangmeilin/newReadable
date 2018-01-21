@@ -14,7 +14,8 @@ import {
   FETCH_COMMENTS_OK,
   FETCH_COMMENT_OK,
   SET_SORTER_OK,
-  SAVE_POST_OK
+  SAVE_POST_OK,
+  SAVE_COMMENT_OK,
 } from './actions'
 
 const reducers = {
@@ -45,7 +46,8 @@ const reducers = {
     },
     [UP_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore + 1 } }),
     [DOWN_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore - 1 } }),
-    [DELETE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, deleted: true } })
+    [DELETE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, deleted: true } }),
+    [SAVE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment } })
   },
   postsByCategory: {
     initValue: {},
