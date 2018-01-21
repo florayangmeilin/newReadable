@@ -49,6 +49,9 @@ class Comment extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
+  onUpVoteComment: comment => { dispatch(actions.upVoteComment(comment)) },
+  onDownVoteComment: comment => { dispatch(actions.downVoteComment(comment)) },
+  onDeleteComment: (comment, onSuccess) => { dispatch(actions.deleteComment(comment, onSuccess)) },
   dispatch
 })
-export default connect(mapDispatchToProps)(Comment)
+export default connect(null,mapDispatchToProps)(Comment)

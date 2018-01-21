@@ -10,13 +10,10 @@ class Comments extends React.Component {
   }
   
   render() {
-    const { comments, post, onUpVoteComment, onDownVoteComment, onDeleteComment } = this.props     
+    const { comments, post } = this.props     
     return  <CommentsUi 
     comments={comments} 
-    post={post} 
-    onUpVoteComment={onUpVoteComment} 
-    onDownVoteComment={onDownVoteComment} 
-    onDeleteComment={onDeleteComment} 
+    post={post}    
     />   
   }
 }
@@ -28,10 +25,7 @@ const mapStateToProps = (({ comments }, { post }) => {
   }
 })
 
-const mapDispatchToProps = dispatch => ({
-  onUpVoteComment: comment => { dispatch(actions.upVoteComment(comment)) },
-  onDownVoteComment: comment => { dispatch(actions.downVoteComment(comment)) },
-  onDeleteComment: comment => { dispatch(actions.deleteComment(comment)) },
+const mapDispatchToProps = dispatch => ({ 
   fetchComments: postId => { dispatch(actions.fetchComments(postId)) }
 })
 

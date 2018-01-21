@@ -116,7 +116,7 @@ class CommentUi extends React.Component {
           action={[
             <Button key="undo" color="accent" dense onClick={this.handleClose}>
               OK
-       </Button>,
+            </Button>,
             <IconButton
               key="close"
               aria-label="Close"

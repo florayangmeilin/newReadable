@@ -76,6 +76,16 @@ export const savePost = post =>
     body: JSON.stringify({ title: post.title, body: post.body })
   }).then(res => res.json())
 
+export const addPost = post =>
+  fetch(`${api}/posts`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id: post.id, timestamp: post.timestamp, title: post.title, body: post.body, author: post.author, category: post.category })
+  }).then(res => res.json())
+
 export const saveComment = comment =>
   fetch(`${api}/comments/${comment.id}`, {
     method: 'PUT',
@@ -86,6 +96,19 @@ export const saveComment = comment =>
     body: JSON.stringify({ timestamp: comment.timestamp, body: comment.body })
   }).then(res => res.json())
 
+export const addComment = comment =>{
+  console.log('addComment:', comment)
+  return fetch(`${api}/comments`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ id: comment.id, timestamp: comment.timestamp, body: comment.body, author: comment.author, parentId: comment.parentId })
+  }).then(res => {
+    return res.json()
+  })
+}
 export const deleteComment = commentId =>
   fetch(`${api}/comments/${commentId}`, {
     method: 'DELETE',

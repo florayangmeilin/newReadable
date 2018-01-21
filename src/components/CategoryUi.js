@@ -4,8 +4,7 @@ import { withStyles } from 'material-ui/styles'
 import Tabs, { Tab } from 'material-ui/Tabs'
 import Sorter from './Sorter'
 import Posts from './Posts'
-import AddIcon from 'material-ui-icons/Add'
-import Button from 'material-ui/Button'
+import NewPost from './NewPost'
 
 const styles = theme => ({
   root: {
@@ -32,10 +31,8 @@ const CategoryUi = ({ classes, category, categories, onCategoryChange, onClose, 
           </Tabs>
         </AppBar>
         <Sorter />
-        <Posts category={category} />
-        <Button fab color="primary" aria-label="add" className={classes.button} onClick={() => { onOpen() }}>
-          <AddIcon />
-        </Button>           
+        <Posts category={category} />       
+        <NewPost categories={categories}/>           
       </div >
     ) :
       <div>loading ...</div>

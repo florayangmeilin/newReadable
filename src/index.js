@@ -16,7 +16,7 @@ ReactDOM.render(
       <Fragment>
         <Route path="/" exact render={({ match }) => (<Category category={null} />)} />
         <Route path="/:category" exact render={({ match }) => { return (<Category category={match.params.category} />) }} />
-        <Route path="/:category/:postid" render={({ match }) => { return (<PostEdit category={match.params.category} postId={match.params.postid} />) }} />
+        <Route path="/:category/:postid" render={({ match }) => { return (<PostEdit category={match.params.category} postId={match.params.postid} />) }} />      
       </Fragment>
     </Provider>
   </BrowserRouter>,

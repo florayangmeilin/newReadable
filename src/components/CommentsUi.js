@@ -9,16 +9,14 @@ const styles = theme => ({
 })
 
 function CommentsUi(props) {
-  const { classes, comments, onUpVoteComment, onDownVoteComment, onDeleteComment } = props
+  const { classes, comments, } = props
   return (
     <div className={classes.root}>
       {comments.filter(c => !c.deleted).map(comment =>
         <Comment
           key={comment.id}
           comment={comment}
-          onUpVoteComment={onUpVoteComment}
-          onDownVoteComment={onDownVoteComment}
-          onDeleteComment={onDeleteComment} />
+           />
       )}
     </div>
   )

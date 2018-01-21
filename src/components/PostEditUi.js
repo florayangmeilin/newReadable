@@ -14,11 +14,11 @@ import Delete from 'material-ui-icons/Delete'
 import Save from 'material-ui-icons/Save'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import Button from 'material-ui/Button';
-import Snackbar from 'material-ui/Snackbar';
-import CloseIcon from 'material-ui-icons/Close';
-
+import Button from 'material-ui/Button'
+import Snackbar from 'material-ui/Snackbar'
+import CloseIcon from 'material-ui-icons/Close'
 import Comments from './Comments'
+import NewComment from './NewComment'
 
 const styles = {
   root: {
@@ -55,7 +55,7 @@ const styles = {
 
 class PostEditUi extends React.Component {
   state = {
-    promptSaveOk: false
+    promptSaveOk: false,   
   }
 
   handleClose = (e, reason) => {
@@ -80,6 +80,7 @@ class PostEditUi extends React.Component {
                 </Grid>
               </Grid>
             </Grid>
+            <NewComment post={post}/>
             <Grid item xs={12}>
               <Grid container justify="center" >
                 <Paper className={classes.paper} >
@@ -152,10 +153,10 @@ class PostEditUi extends React.Component {
                             </IconButton>
                             <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDeletePost(post, () => { history.push(`/${post.category}`) }) }}>
                               <Delete />
-                            </IconButton>
+                            </IconButton>                           
                           </Toolbar>}
                       </AppBar>
-                    </div>
+                    </div>                   
                   </div>
                   <div>
                     <Comments post={post} />

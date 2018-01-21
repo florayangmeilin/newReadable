@@ -16,6 +16,8 @@ import {
   SET_SORTER_OK,
   SAVE_POST_OK,
   SAVE_COMMENT_OK,
+  ADD_POST_OK,
+  ADD_COMMENT_OK,
 } from './actions'
 
 const reducers = {
@@ -34,7 +36,12 @@ const reducers = {
       const post = state[postId]
       return { ...state, [postId]: { ...(post || {}), comments: comments.map(c => c.id) } }
     },
-    [SAVE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post } })
+    [SAVE_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post } }),
+    [ADD_POST_OK]: (state, { post }) => ({ ...state, [post.id]: { ...post } }),
+    [ADD_COMMENT_OK]: (state, { comment }) => {
+      const post = state[comment.parentId]
+      return post ? { ...state, [comment.parentId]: { ...post, commentCount: post.commentCount + 1, comments: [...(post.comments || []), comment.id] } } : state
+    }
   },
   comments: {
     initValue: {},
@@ -47,13 +54,23 @@ const reducers = {
     [UP_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore + 1 } }),
     [DOWN_VOTE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, voteScore: comment.voteScore - 1 } }),
     [DELETE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment, deleted: true } }),
-    [SAVE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment } })
+    [SAVE_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment } }),
+    [ADD_COMMENT_OK]: (state, { comment }) => ({ ...state, [comment.id]: { ...comment } })
   },
   postsByCategory: {
     initValue: {},
     [FETCH_POSTS_BEGIN]: (state, { category }) => ({ ...state, [category]: { isFetching: true } }),
     [FETCH_POSTS_OK]: (state, { category, posts }) => ({ ...state, [category]: { isFetching: false, isInvalidate: false, items: posts.map(p => p.id) } }),
-    [FETCH_POSTS_FAILED]: (state, { category }) => ({ ...state, [category]: { isFetching: false, isInvalidate: true } })
+    [FETCH_POSTS_FAILED]: (state, { category }) => ({ ...state, [category]: { isFetching: false, isInvalidate: true } }),
+    [ADD_POST_OK]: (state, { post }) => {
+      const postsByCategory = state[post.category] || {}
+      const posts = state[null] || {}
+      return {
+        ...state,
+        [post.category]: { ...postsByCategory, items: [...(postsByCategory.items || []), post.id] },
+        [null]: { ...posts, items: [...(posts.items || []), post.id] }
+      }
+    }
   },
   selectedSorter: {
     initValue: 'dateEarliest',

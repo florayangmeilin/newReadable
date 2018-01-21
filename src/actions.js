@@ -1,4 +1,5 @@
 import * as PostsAPI from './api'
+import { getComment } from './api';
 
 export const FETCH_CATEGORIES_OK = 'FETCH_CATEGORIES_OK'
 const fetchCategories = () => dispatch => {
@@ -60,6 +61,7 @@ export const FETCH_POST_OK = 'FETCH_POST_OK'
 const fetchPost = postId => dispatch =>
   PostsAPI.getPost(postId)
     .then(post => {
+      console.log(FETCH_POST_OK, post)
       dispatch({
         type: FETCH_POST_OK,
         post
@@ -120,7 +122,7 @@ export const deletePost = (post, onSuccess) => dispatch =>
         type: DELETE_POST_OK,
         post
       })
-      onSuccess()
+      onSuccess && onSuccess()
     })
 
 export const SAVE_POST_OK = 'SAVE_POST_OK'
@@ -129,6 +131,17 @@ export const savePost = (post, onSuccess) => dispatch =>
     .then(() => {
       dispatch({
         type: SAVE_POST_OK,
+        post
+      })
+      onSuccess()
+    })
+
+export const ADD_POST_OK = 'ADD_POST_OK'
+export const addPost = (post, onSuccess) => dispatch =>
+  PostsAPI.addPost(post)
+    .then(() => {
+      dispatch({
+        type: ADD_POST_OK,
         post
       })
       onSuccess()
@@ -143,6 +156,18 @@ export const saveComment = (comment, onSuccess) => dispatch =>
         comment
       })
       onSuccess()
+    })
+
+export const ADD_COMMENT_OK = 'ADD_COMMENT_OK'
+export const addComment = (comment, onSuccess) => dispatch =>
+  PostsAPI.addComment(comment)
+    .then(() => {
+      dispatch(fetchComments(comment.parentId))
+      // dispatch({
+      //   type: ADD_COMMENT_OK,
+      //   comment
+      // })
+      onSuccess && onSuccess()
     })
 
 export const DELETE_COMMENT_OK = 'DELETE_COMMENT_OK'
