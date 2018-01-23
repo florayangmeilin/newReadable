@@ -11,6 +11,7 @@ import Delete from 'material-ui-icons/Delete'
 import Typography from 'material-ui/Typography'
 import { withStyles } from 'material-ui/styles'
 import { Link } from 'react-router-dom'
+import * as utility from '../utility'
 
 const styles = theme => ({
   heading: {
@@ -20,6 +21,7 @@ const styles = theme => ({
   menuButton: {
     marginLeft: -12,
     marginRight: 20,
+    color: 'white'
   },
 })
 
@@ -28,7 +30,7 @@ const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
     <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
       <Typography className={classes.heading}>
         {post.title}<br />
-        Author: {post.author} ( {post.timestamp} )
+        Author: {post.author} ( {utility.toDatetimeString(post.timestamp)} )
       </Typography>
     </ExpansionPanelSummary>
     <ExpansionPanelDetails>
@@ -37,20 +39,20 @@ const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
         Score: {post.voteScore} <br />
       </Typography>
     </ExpansionPanelDetails>
-    <AppBar position="static" color="accent">
+    <AppBar position="static">
       <Toolbar>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onUpVote(post) }}>
+        <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { onUpVote(post) }}>
           <ThumbUp />
         </IconButton>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDownVote(post) }}>
+        <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { onDownVote(post) }}>
           <ThumbDown />
         </IconButton>
         <Link to={`/${post.category}/${post.id}`}>
-          <IconButton className={classes.menuButton} color="contrast" aria-label="Menu">
+          <IconButton className={classes.menuButton} aria-label="Menu">
             <Edit />
           </IconButton>
         </Link>
-        <IconButton className={classes.menuButton} color="contrast" aria-label="Menu" onClick={() => { onDeletePost(post) }}>
+        <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { onDeletePost(post) }}>
           <Delete />
         </IconButton>
       </Toolbar>
@@ -58,5 +60,4 @@ const Post = ({ classes, post, onUpVote, onDownVote, onDeletePost }) => (
   </ExpansionPanel>
 )
 
-const PostWithStyle = withStyles(styles)(Post)
-export default PostWithStyle
+export default withStyles(styles)(Post)

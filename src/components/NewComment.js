@@ -6,20 +6,16 @@ import Button from 'material-ui/Button'
 import Input from 'material-ui/Input/Input'
 import * as actions from '../actions'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import TextField from 'material-ui/TextField'
 import AddIcon from 'material-ui-icons/Add'
-
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
+import * as utility from '../utility'
 
 const styles = theme => ({
+  root: {
+    width: '100%',
+    textAlign: 'right'
+  },
   container: {
     position: 'absolute',
     width: 8 * 50,
@@ -30,54 +26,62 @@ const styles = theme => ({
     backgroundColor: '#fff',
     boxShadow: '0 5px 15px rgba(0, 0, 0, .5)',
     padding: 8 * 4,
+  },
+  button: {
+    marginTop: theme.spacing.unit
   }
 })
 
-const getNewComment = () => ({
-  id: guid(),
+const getNewComment = postId => ({
+  id: utility.getUuid(),
   timestamp: Date.now(),
   body: '',
-  author: ''
+  author: '',
+  voteScore: 1,
+  parentId: postId
 })
 
 class NewComment extends React.Component {
   state = {
-    ...getNewComment(),
-    open: false,
+    adding: false
   }
 
   handleSave = onSuccess => {
-    const { dispatch, comment = {}, post } = this.props
-    this.setState({ open: false })
-    dispatch(actions.addComment({ ...comment, id: this.state.id, timestamp: this.state.timestamp, body: this.state.body, author: this.state.author, parentId: post.id }, onSuccess))
+    const { newComment } = this.state
+    this.setState({ adding: false })
+    this.props.dispatch(actions.addComment(newComment))
   }
 
   handleChange = e => {
-    const { name, value } = e.target
+    const { name } = e.target
+    const value = (name === 'timestamp' && utility.toTimestamp(e.target.value)) || e.target.value
+    const { newComment } = this.state
     this.setState({
-      [name]: value
+      newComment: { ...newComment, [name]: value }
     })
   }
 
   handleOpen = () => {
-    this.setState({ ...getNewComment(), open: true })
+    const { postId } = this.props
+    this.setState({ newComment: getNewComment(postId), adding: true })
   }
 
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ adding: false })
   }
 
   render() {
     const { classes } = this.props
+    const { newComment } = this.state
     return (
-      <React.Fragment>
-        <Button fab color="primary" aria-label="add" className={classes.button} onClick={this.handleOpen}>
+      <div className={classes.root}>
+        <Button fab color="primary" aria-label="add" onClick={this.handleOpen} className={classes.button}>
           <AddIcon />
         </Button>
-        <Modal
+        {newComment ? <Modal
           aria-labelledby="newPost"
           aria-describedby="newPost"
-          open={this.state.open}
+          open={this.state.adding}
           onClose={this.handleClose}
         >
           <div className={classes.container}>
@@ -88,7 +92,7 @@ class NewComment extends React.Component {
               type="text"
               name="id"
               fullWidth
-              defaultValue={this.state.id}
+              defaultValue={newComment.id}
               onChange={this.handleChange}
               required
             />
@@ -96,11 +100,10 @@ class NewComment extends React.Component {
               {'timestamp'}
             </Typography>
             <Input
-              type="text"
+              type="datetime-local"
               name="timestamp"
               fullWidth
-              defaultValue={this.state.timestamp}
-              onChange={this.handleChange}
+              defaultValue={utility.toEditDatetimeString(newComment.timestamp)}
             />
             <Typography type="body1" color="primary" >
               {'body'}
@@ -120,21 +123,20 @@ class NewComment extends React.Component {
               fullWidth
               onChange={this.handleChange}
             />
-            <Button key="Save" color="primary" dense onClick={() => { this.handleSave(() => { this.setState({ open: false }) }) }}>
+            <Button key="Save" color="primary" dense onClick={() => { this.handleSave(() => { }) }}>
               Save
             </Button>
-            <Button key="cancel" color="accent" dense onClick={this.handleClose}>
+            <Button key="cancel" color="secondary" dense onClick={this.handleClose}>
               Cancel
             </Button>
           </div>
-        </Modal>
-      </React.Fragment>
+        </Modal> : null}
+      </div>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  dispatch
-})
-
-export default connect(mapDispatchToProps)(withStyles(styles)(NewComment))
+export default compose(
+  connect(),
+  withStyles(styles)
+)(NewComment)

@@ -1,37 +1,52 @@
 import React from 'react'
-import CategoryUi from './CategoryUi'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import * as actions from '../actions'
 import { compose } from 'redux'
+import AppBar from 'material-ui/AppBar'
+import { withStyles } from 'material-ui/styles'
+import Tabs, { Tab } from 'material-ui/Tabs'
+import Sorter from './Sorter'
+import Posts from './Posts'
+import NewPost from './NewPost'
+
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    marginTop: 0,
+    backgroundColor: theme.palette.background.paper,
+  },
+  button: {
+    margin: theme.spacing.unit
+  }
+})
 
 class Category extends React.Component {
-  state = {
-    open: false,
-  }
+
   componentDidMount() {
-    const { fetchCategoriesIfNeeded } = this.props
-    fetchCategoriesIfNeeded()
-  }
-  handleOpen = () => {
-    this.setState({ open: true })
+    this.props.dispatch(actions.fetchCategoriesIfNeeded())
   }
 
-  handleClose = () => {
-    this.setState({ open: false })
-  }
   render() {
-    const { category, categories, history } = this.props
-    const { open } = this.state
+    const { category, categories, history, classes } = this.props
     return (
-      <CategoryUi
-        category={category}
-        categories={categories}
-        onCategoryChange={toCategory => history.push(toCategory !== "#" ? `/${toCategory}` : '/')}
-        onOpen={this.handleOpen}
-        onClose={this.handleClose}
-        open={open}
-      />
+      categories.length > 0 ? (
+        <div className={classes.root} >
+          <AppBar position="static">
+            <Tabs
+              onChange={(event, value) => {history.push(value !== "#" ? `/${value}` : '/')}}
+              value={category || "#"}
+            >
+              <Tab label="All Posts" value="#" />
+              {categories.map(c => (<Tab label={c} value={c} key={c} />))}
+            </Tabs>
+          </AppBar>
+          <Sorter />
+          <Posts category={category} />       
+          <NewPost categories={category ? [category] : categories}/>           
+        </div >
+      ) :
+        <div>loading ...</div>
     )
   }
 }
@@ -43,12 +58,9 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  fetchCategoriesIfNeeded: category => { dispatch(actions.fetchCategoriesIfNeeded()) }
-})
-
 export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withRouter
+  connect(mapStateToProps),
+  withRouter,
+  withStyles(styles)
 )(Category)
 

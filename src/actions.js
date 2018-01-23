@@ -1,5 +1,4 @@
 import * as PostsAPI from './api'
-import { getComment } from './api';
 
 export const FETCH_CATEGORIES_OK = 'FETCH_CATEGORIES_OK'
 const fetchCategories = () => dispatch => {
@@ -61,7 +60,6 @@ export const FETCH_POST_OK = 'FETCH_POST_OK'
 const fetchPost = postId => dispatch =>
   PostsAPI.getPost(postId)
     .then(post => {
-      console.log(FETCH_POST_OK, post)
       dispatch({
         type: FETCH_POST_OK,
         post
@@ -133,7 +131,7 @@ export const savePost = (post, onSuccess) => dispatch =>
         type: SAVE_POST_OK,
         post
       })
-      onSuccess()
+      onSuccess && onSuccess()
     })
 
 export const ADD_POST_OK = 'ADD_POST_OK'
@@ -144,7 +142,7 @@ export const addPost = (post, onSuccess) => dispatch =>
         type: ADD_POST_OK,
         post
       })
-      onSuccess()
+      onSuccess && onSuccess()
     })
 
 export const SAVE_COMMENT_OK = 'SAVE_COMMENT_OK'
@@ -155,18 +153,17 @@ export const saveComment = (comment, onSuccess) => dispatch =>
         type: SAVE_COMMENT_OK,
         comment
       })
-      onSuccess()
+      onSuccess && onSuccess()
     })
 
 export const ADD_COMMENT_OK = 'ADD_COMMENT_OK'
 export const addComment = (comment, onSuccess) => dispatch =>
   PostsAPI.addComment(comment)
     .then(() => {
-      dispatch(fetchComments(comment.parentId))
-      // dispatch({
-      //   type: ADD_COMMENT_OK,
-      //   comment
-      // })
+      dispatch({
+        type: ADD_COMMENT_OK,
+        comment
+      })
       onSuccess && onSuccess()
     })
 
@@ -181,7 +178,7 @@ export const deleteComment = comment => dispatch =>
     })
 
 export const FETCH_COMMENTS_OK = 'FETCH_COMMENTS_OK'
-export const fetchComments = postId => dispatch =>
+const fetchComments = postId => dispatch =>
   PostsAPI.getComments(postId)
     .then(comments => {
       dispatch({
@@ -190,6 +187,15 @@ export const fetchComments = postId => dispatch =>
         comments
       })
     })
+const shouldfetchComments = (state, postId) => {
+  const { posts } = state
+  const post = posts[postId]
+  return !post || !post.comments
+}
+export const fetchCommentsIfNeeded = postId => (dispatch, getState) => {
+  if (shouldfetchComments(getState(), postId))
+    return dispatch(fetchComments(postId))
+}
 
 export const FETCH_COMMENT_OK = 'FETCH_COMMENT_OK'
 export const fetchComment = commentId => dispatch =>

@@ -9,19 +9,15 @@ import * as actions from '../actions'
 import { connect } from 'react-redux'
 import Select from 'material-ui/Select'
 import { MenuItem } from 'material-ui/Menu'
-import TextField from 'material-ui/TextField';
-
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-      .toString(16)
-      .substring(1);
-  }
-  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-    s4() + '-' + s4() + s4() + s4();
-}
+import TextField from 'material-ui/TextField'
+import { compose } from 'redux'
+import * as utility from '../utility'
 
 const styles = theme => ({
+  root: {
+    textAlign: 'left',
+    marginLeft: theme.spacing.unit * 3
+  },
   container: {
     position: 'absolute',
     width: 8 * 50,
@@ -35,49 +31,55 @@ const styles = theme => ({
   }
 })
 
+const getNewPost = categories => ({
+  id: utility.getUuid(),
+  timestamp: Date.now(),
+  title: '',
+  body: '',
+  author: '',
+  category: (categories && categories.length === 1 && categories[0]) || ''
+})
+
 class NewPost extends React.Component {
   state = {
-    open: false,
-    id: guid(),
-    timestamp: Date.now(),
-    title: '',
-    body: '',
-    author: '',
-    category: ''
+    editing: false,
+    newPost: null
   }
 
-  handleOpen = () => {
-    this.setState({ open: true })
+  handleOpen = categories => {
+    this.setState({ newPost: getNewPost(categories), editing: true })
   }
 
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ newPost: null, editing: false })
   }
 
   handleSave = onSuccess => {
-    const { dispatch, post={} } = this.props
-    this.setState({ open: false })
-    dispatch(actions.addPost({ ...post, id: this.state.id, timestamp: this.state.timestamp, title: this.state.title, body: this.state.body, author: this.state.author, category: this.state.category }, onSuccess))
+    this.setState({ editing: false })
+    this.props.dispatch(actions.addPost(this.state.newPost, onSuccess))
   }
 
   handleChange = e => {
-    const { name, value } = e.target
+    const { name } = e.target
+    const value = (name === 'timestamp' && utility.toTimestamp(e.target.value)) || e.target.value
+    const { newPost } = this.state
     this.setState({
-      [name]: value
+      newPost: { ...newPost, [name]: value }
     })
   }
 
   render() {
     const { classes, categories } = this.props
+    const { newPost, editing } = this.state
     return (
-      <React.Fragment>
-        <Button fab color="primary" aria-label="add" className={classes.button} onClick={this.handleOpen}>
+      <div className={classes.root}>
+        <Button fab color="primary" aria-label="add" className={classes.button} onClick={() => { this.handleOpen(categories) }}>
           <AddIcon />
         </Button>
-        <Modal
+        {newPost && <Modal
           aria-labelledby="newPost"
           aria-describedby="newPost"
-          open={this.state.open}
+          open={editing}
           onClose={this.handleClose}
         >
           <div className={classes.container}>
@@ -88,7 +90,7 @@ class NewPost extends React.Component {
               type="text"
               name="id"
               fullWidth
-              defaultValue={this.state.id}
+              defaultValue={newPost.id}
               onChange={this.handleChange}
               required
             />
@@ -96,10 +98,10 @@ class NewPost extends React.Component {
               {'timestamp'}
             </Typography>
             <Input
-              type="text"
+              type="datetime-local"
               name="timestamp"
               fullWidth
-              defaultValue={this.state.timestamp}
+              defaultValue={utility.toEditDatetimeString(newPost.timestamp)}
               onChange={this.handleChange}
             />
             <Typography type="body1" color="primary" >
@@ -131,34 +133,32 @@ class NewPost extends React.Component {
             />
             <Typography type="body1" color="primary" >
               {'category'}
-            </Typography>         
-             <Select
-            fullWidth
-            value={this.state.category}
-            onChange={this.handleChange}
-            input={<Input name="category" id="category"/>}
-          >
-            {categories && categories.map( c => (
-              <MenuItem key={c} value={c}>{c}</MenuItem>
-            ))
-            }
-           
-          </Select>
-            <Button key="Save" color="primary" dense onClick={() => { this.handleSave(() => { this.setState({ open: false }) }) }}>
+            </Typography>
+            <Select
+              fullWidth
+              value={newPost.category}
+              onChange={this.handleChange}
+              input={<Input name="category" id="category" />}
+            >
+              {categories && categories.map(c => (
+                <MenuItem key={c} value={c}>{c}</MenuItem>
+              ))
+              }
+            </Select>
+            <Button key="Save" color="primary" dense onClick={() => { this.handleSave(() => { }) }}>
               Save
             </Button>
-            <Button key="cancel" color="accent" dense onClick={this.handleClose}>
+            <Button key="cancel" color="secondary" dense onClick={this.handleClose}>
               Cancel
-            </Button>           
+            </Button>
           </div>
-        </Modal>
-      </React.Fragment>
+        </Modal>}
+      </div>
     )
   }
 }
 
-const mapDispatchToProps = dispatch => ({
-  dispatch
-})
-
-export default connect(mapDispatchToProps)(withStyles(styles)(NewPost))
+export default compose(
+  connect(),
+  withStyles(styles)
+)(NewPost)
