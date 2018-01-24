@@ -13,6 +13,8 @@ import ThumbDown from 'material-ui-icons/ThumbDown'
 import Edit from 'material-ui-icons/Edit'
 import Delete from 'material-ui-icons/Delete'
 import Save from 'material-ui-icons/Save'
+import Cancel from 'material-ui-icons/Cancel'
+import ArrowBack from 'material-ui-icons/ArrowBack'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import Button from 'material-ui/Button'
@@ -21,6 +23,7 @@ import CloseIcon from 'material-ui-icons/Close'
 import Comments from './Comments'
 import NewComment from './NewComment'
 import * as actions from '../actions'
+import NoMatch404 from './NoMatch404'
 
 const styles = {
   root: {
@@ -55,22 +58,20 @@ const styles = {
   },
   menuButton: {
     color: 'white'
-  },
+  }
 }
 
 class PostEdit extends React.Component {
-  constructor(props) {
-    super(props)
-    const post = props.post || {}
-    this.state = {
-      editable: false,
-      post,
-      promptSaveOk: false
-    }
+  state = {
+    loading: false,
+    editable: false,
+    editingPost: {},
+    promptSaveOk: false
   }
 
   fetchPostIfNeeded = postId => {
-    this.props.dispatch(actions.fetchPostIfNeeded(postId))
+    this.setState({ loading: true })
+    this.props.dispatch(actions.fetchPostIfNeeded(postId, this.setState({ loading: false })))
   }
   componentDidMount() {
     const { postId } = this.props
@@ -88,22 +89,26 @@ class PostEdit extends React.Component {
   }
   handleChange = e => {
     const { name, value } = e.target
-    const { post } = this.state
+    const { editingPost } = this.state
     this.setState({
-      post: { ...post, [name]: value }
+      editingPost: { ...editingPost, [name]: value }
     })
   }
   handleSave = () => {
     const { dispatch, post } = this.props
+    const { editingPost } = this.state
     this.setState({ editable: false })
-    dispatch(actions.savePost({ ...post, title: this.state.title, body: this.state.body }, () => { this.setState({ promptSaveOk: true }) }))
+    dispatch(actions.savePost({ ...post, ...editingPost }, () => { this.setState({ promptSaveOk: true }) }))
+  }
+  handleCancel = () => {
+    this.setState({ editingPost: {}, editable: false })
   }
   handleClose = () => {
     this.setState({ promptSaveOk: false })
   }
   render() {
     const { post, classes, dispatch, history } = this.props
-    const { editable } = this.state
+    const { editable, editingPost, loading } = this.state
     return (
       post ?
         <React.Fragment>
@@ -128,7 +133,7 @@ class PostEdit extends React.Component {
                       <Input
                         type="text"
                         name="title"
-                        defaultValue={post.title}
+                        value={editable ? editingPost.title : post.title}
                         fullWidth
                         disabled={!editable}
                         onChange={this.handleChange}
@@ -142,7 +147,7 @@ class PostEdit extends React.Component {
                       <Input
                         type="text"
                         name="body"
-                        defaultValue={post.body}
+                        value={editable ? editingPost.body : post.body}
                         fullWidth
                         disabled={!editable}
                         onChange={this.handleChange}
@@ -158,7 +163,7 @@ class PostEdit extends React.Component {
                         name="author"
                         defaultValue={post.author}
                         fullWidth
-                        disabled={true}
+                        disabled
                       />
                     </div>
                     <br />
@@ -176,6 +181,9 @@ class PostEdit extends React.Component {
                             <IconButton className={classes.menuButton} aria-label="Menu" onClick={this.handleSave}>
                               <Save />
                             </IconButton>
+                            <IconButton className={classes.menuButton} aria-label="Menu" onClick={this.handleCancel}>
+                              <Cancel />
+                            </IconButton>
                           </Toolbar> :
                           <Toolbar>
                             <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { dispatch(actions.upVotePost(post)) }}>
@@ -189,6 +197,9 @@ class PostEdit extends React.Component {
                             </IconButton>
                             <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { dispatch(actions.deletePost(post, () => { history.push(`/${post.category}`) })) }}>
                               <Delete />
+                            </IconButton>
+                            <IconButton className={classes.menuButton} aria-label="Menu" onClick={() => { console.log('history.length', history.length); history.length < 2 ? history.push(`/${post.category}`) : history.goBack() }}>
+                              <ArrowBack />
                             </IconButton>
                           </Toolbar>}
                       </AppBar>
@@ -206,7 +217,7 @@ class PostEdit extends React.Component {
               horizontal: 'center',
             }}
             open={this.state.promptSaveOk}
-            autoHideDuration={2000}
+            autoHideDuration={1000}
             onClose={this.handleClose}
             SnackbarContentProps={{
               'aria-describedby': 'message-id',
@@ -227,7 +238,7 @@ class PostEdit extends React.Component {
               </IconButton>,
             ]}
           />
-        </React.Fragment> : <div />
+        </React.Fragment> : loading ? <div>loading...</div> : <NoMatch404 />
     )
   }
 }

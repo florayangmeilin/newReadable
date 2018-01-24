@@ -57,18 +57,21 @@ export const fetchPostsIfNeeded = (category = null) => (dispatch, getState) => {
 }
 
 export const FETCH_POST_OK = 'FETCH_POST_OK'
-const fetchPost = postId => dispatch =>
+const fetchPost = (postId, onEnd) => dispatch =>
   PostsAPI.getPost(postId)
     .then(post => {
       dispatch({
         type: FETCH_POST_OK,
         post
       })
+      onEnd && onEnd()
+    }, () => {
+      onEnd && onEnd()
     })
-export const fetchPostIfNeeded = postId => (dispatch, getState) => {
+export const fetchPostIfNeeded = (postId, onEnd) => (dispatch, getState) => {
   const { posts } = getState()
   if (!posts[postId]) {
-    return dispatch(fetchPost(postId))
+    return dispatch(fetchPost(postId, onEnd))
   }
 }
 

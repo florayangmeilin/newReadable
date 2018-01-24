@@ -16,6 +16,7 @@ import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Grid from 'material-ui/Grid'
 import Save from 'material-ui-icons/Save'
+import Cancel from 'material-ui-icons/Cancel'
 import Button from 'material-ui/Button'
 import Snackbar from 'material-ui/Snackbar'
 import CloseIcon from 'material-ui-icons/Close'
@@ -41,22 +42,19 @@ const styles = theme => ({
 })
 
 class Comment extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      editable: false,
-      editingComment: props.comment || {},
-      promptSaveOk: false
-    }
+  state = {
+    editable: false,
+    editingComment: {},
+    promptSaveOk: false
   }
 
   handleEdit = () => {
-    this.setState({ editable: true })
+    const { comment } = this.props
+    this.setState({ editingComment: { ...comment, timestamp: Date.now() }, editable: true })
   }
 
   handleChange = e => {
-    const { name } = e.target
-    const value = (name === 'timestamp' && utility.toTimestamp(e.target.value)) || e.target.value
+    const { name, value } = e.target
     const { editingComment } = this.state
     this.setState({
       editingComment: { ...editingComment, [name]: value }
@@ -64,9 +62,14 @@ class Comment extends React.Component {
   }
 
   handleSave = () => {
+    const { comment } = this.props
     const { editingComment } = this.state
-    this.setState({ editable: false })
-    this.props.dispatch(actions.saveComment(editingComment, () => { this.setState({ promptSaveOk: true }) }))
+    this.setState({ editingComment: {}, editable: false })
+    this.props.dispatch(actions.saveComment({ ...comment, ...editingComment }, () => { this.setState({ promptSaveOk: true }) }))
+  }
+
+  handleCancel = () => {
+    this.setState({ editingComment: {}, editable: false })
   }
 
   handleClose = (e, reason) => {
@@ -75,35 +78,45 @@ class Comment extends React.Component {
 
   render() {
     const { comment, dispatch, classes } = this.props
-    const { editable } = this.state
+    const { editable, editingComment } = this.state
     return (
       <React.Fragment>
         <ExpansionPanel key={comment.id}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading} color="primary">Author ( {comment.author} )</Typography>
+            <Typography className={classes.heading} color="primary">{comment.body}</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails >
             <Grid container className={classes.container} alignItems='center' direction='column' justify='flex-start'>
               <Grid item >
                 <TextField
-                  label="timestamp"
-                  type="datetime-local"
-                  name="timestamp"
-                  defaultValue={utility.toEditDatetimeString(comment.timestamp)}
+                  label="Content"
+                  className={classes.textField}
+                  value={editable ? editingComment.body : comment.body}
+                  onChange={this.handleChange}
+                  margin="normal"
+                  disabled={!editable}
+                  name="body"
+                />
+                <TextField
+                  label="Author"
+                  type="text"
+                  defaultValue={comment.author}
                   className={classes.textField}
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  onChange={this.handleChange}
-                  disabled={!editable}
+                  disabled
                 />
                 <TextField
-                  label="Content"
+                  label="Timestamp"
+                  type="text"
+                  name="timestamp"
+                  value={utility.toDatetimeString(comment.timestamp)}
                   className={classes.textField}
-                  defaultValue={comment.body}
-                  onChange={this.handleChange}
-                  margin="normal"
-                  disabled={!editable}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  disabled
                 />
                 <Typography color="primary">
                   <br />
@@ -117,6 +130,9 @@ class Comment extends React.Component {
               <Toolbar>
                 <IconButton className={classes.menuButton} aria-label="Menu" onClick={this.handleSave}>
                   <Save />
+                </IconButton>
+                <IconButton className={classes.menuButton} aria-label="Menu" onClick={this.handleCancel}>
+                  <Cancel />
                 </IconButton>
               </Toolbar> :
               <Toolbar>

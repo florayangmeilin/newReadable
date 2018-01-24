@@ -8,7 +8,7 @@ import { withStyles } from 'material-ui/styles'
 import Tabs, { Tab } from 'material-ui/Tabs'
 import Sorter from './Sorter'
 import Posts from './Posts'
-import NewPost from './NewPost'
+import NoMatch404 from './NoMatch404'
 
 const styles = theme => ({
   root: {
@@ -31,10 +31,11 @@ class Category extends React.Component {
     const { category, categories, history, classes } = this.props
     return (
       categories.length > 0 ? (
+        !category || categories.includes(category) ?
         <div className={classes.root} >
           <AppBar position="static">
             <Tabs
-              onChange={(event, value) => {history.push(value !== "#" ? `/${value}` : '/')}}
+              onChange={(event, value) => { history.push(value !== "#" ? `/${value}` : '/') }}
               value={category || "#"}
             >
               <Tab label="All Posts" value="#" />
@@ -42,9 +43,8 @@ class Category extends React.Component {
             </Tabs>
           </AppBar>
           <Sorter />
-          <Posts category={category} />       
-          <NewPost categories={category ? [category] : categories}/>           
-        </div >
+          <Posts category={category} categories={categories}/>
+        </div > : <NoMatch404 />
       ) :
         <div>loading ...</div>
     )

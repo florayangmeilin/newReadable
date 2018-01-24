@@ -97,7 +97,6 @@ export const saveComment = comment =>
   }).then(res => res.json())
 
 export const addComment = comment =>{
-  console.log('addComment:', comment)
   return fetch(`${api}/comments`, {
     method: 'POST',
     headers: {

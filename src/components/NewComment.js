@@ -7,7 +7,6 @@ import Input from 'material-ui/Input/Input'
 import * as actions from '../actions'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import TextField from 'material-ui/TextField'
 import AddIcon from 'material-ui-icons/Add'
 import * as utility from '../utility'
 
@@ -28,11 +27,11 @@ const styles = theme => ({
     padding: 8 * 4,
   },
   button: {
-    marginTop: theme.spacing.unit
+    marginTop: theme.spacing.unit * 2
   }
 })
 
-const getNewComment = postId => ({
+const createNewComment = postId => ({
   id: utility.getUuid(),
   timestamp: Date.now(),
   body: '',
@@ -63,7 +62,7 @@ class NewComment extends React.Component {
 
   handleOpen = () => {
     const { postId } = this.props
-    this.setState({ newComment: getNewComment(postId), adding: true })
+    this.setState({ newComment: createNewComment(postId), adding: true })
   }
 
   handleClose = () => {
@@ -79,32 +78,10 @@ class NewComment extends React.Component {
           <AddIcon />
         </Button>
         {newComment ? <Modal
-          aria-labelledby="newPost"
-          aria-describedby="newPost"
           open={this.state.adding}
           onClose={this.handleClose}
         >
           <div className={classes.container}>
-            <Typography type="body1" color="primary" >
-              {'ID'}
-            </Typography>
-            <TextField
-              type="text"
-              name="id"
-              fullWidth
-              defaultValue={newComment.id}
-              onChange={this.handleChange}
-              required
-            />
-            <Typography type="body1" color="primary" >
-              {'timestamp'}
-            </Typography>
-            <Input
-              type="datetime-local"
-              name="timestamp"
-              fullWidth
-              defaultValue={utility.toEditDatetimeString(newComment.timestamp)}
-            />
             <Typography type="body1" color="primary" >
               {'body'}
             </Typography>

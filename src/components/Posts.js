@@ -1,10 +1,40 @@
 import React from 'react'
 import Typography from 'material-ui/Typography'
 import { connect } from 'react-redux'
+import Button from 'material-ui/Button'
+import AddIcon from 'material-ui-icons/Add'
 import * as actions from '../actions'
 import Post from './Post'
+import EditPost from './EditPost'
+import * as utility from '../utility'
+import { withStyles } from 'material-ui/styles'
+import { compose } from '../../../../Users/Martin/AppData/Local/Microsoft/TypeScript/2.6/node_modules/redux';
+
+const createNewPost = category => ({
+  id: utility.getUuid(),
+  timestamp: Date.now(),
+  title: '',
+  body: '',
+  author: '',
+  category: category || '',
+  voteScore: 1,
+  commentCount: 0,
+  deleted: false,
+  comments: null,
+  isNewPost: true
+})
+
+const styles = theme => ({
+  add: {
+    marginTop: theme.spacing.unit * 2
+  }
+})
 
 class Posts extends React.Component {
+  state = {
+    editingPost: null
+  }
+
   componentDidMount() {
     const { category } = this.props
     this.fetchPostsIfNeeded(category)
@@ -29,24 +59,51 @@ class Posts extends React.Component {
     this.props.dispatch(actions.deletePost(post))
   }
 
+  handleNewPost = () => {
+    const { category } = this.props
+    this.setState({
+      editingPost: createNewPost(category)
+    })
+  }
+
+  handleEditPost = post => {
+    this.setState({
+      editingPost: { ...post, isNewPost: false }
+    })
+  }
+
+  handleCloseOfEditPost = () => {
+    this.setState({
+      editingPost: null
+    })
+  }
+
   fetchPostsIfNeeded = category => {
     this.props.dispatch(actions.fetchPostsIfNeeded(category))
   }
 
   render() {
-    const { posts } = this.props
+    const { posts, categories, category, classes } = this.props
+    const { editingPost } = this.state
     return (
-      <Typography component="div" style={{ padding: 8 * 3 }}>
-        {posts.map(post =>
-          <Post
-            key={post.id}
-            post={post}
-            onUpVote={this.handleUpVote}
-            onDownVote={this.handleDownVote}
-            onDeletePost={this.handleDeletePost}
-          />
-        )}
-      </Typography>
+      <React.Fragment>
+        <Typography component="div" style={{ padding: 8 * 3 }}>
+          {posts.map(post =>
+            <Post
+              key={post.id}
+              post={post}
+              onUpVote={this.handleUpVote}
+              onDownVote={this.handleDownVote}
+              onDeletePost={this.handleDeletePost}
+              onEditPost={this.handleEditPost}
+            />
+          )}
+          <Button fab color="primary" className={classes.add} aria-label="add" onClick={this.handleNewPost}>
+            <AddIcon />
+          </Button>
+        </Typography>
+        {editingPost && <EditPost post={editingPost} categories={category ? null : categories} onClose={this.handleCloseOfEditPost} />}
+      </React.Fragment>
     )
   }
 }
@@ -66,4 +123,7 @@ const mapStateToProps = ({ posts, postsByCategory, selectedSorter }, { category 
   }
 }
 
-export default connect(mapStateToProps)(Posts)
+export default compose(
+  connect(mapStateToProps),
+  withStyles(styles)
+)(Posts)
