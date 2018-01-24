@@ -7,7 +7,8 @@
     - `node server`
 
 # Readable front end   
-*Download or fork and clone below repository
+
+* Download or fork and clone below repository
     - `git clone https://github.com/florayangmeilin/newReadable.git`
     - `cd newReadable`
     - `npm install`
