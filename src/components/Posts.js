@@ -8,7 +8,7 @@ import Post from './Post'
 import EditPost from './EditPost'
 import * as utility from '../utility'
 import { withStyles } from 'material-ui/styles'
-import { compose } from '../../../../Users/Martin/AppData/Local/Microsoft/TypeScript/2.6/node_modules/redux';
+import { compose } from 'redux'
 
 const createNewPost = category => ({
   id: utility.getUuid(),
